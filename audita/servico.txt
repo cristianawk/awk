@@ -1,0 +1,113 @@
+AUDITORIA
+
+CONCLUIDO ->    * Cadastra Fornecedor
+                    - Consulta por nome de Fornecedor
+
+CONCLUIDO ->    * Cadastro de Produtos
+                    - Lista de produtos ja Cadastrados
+                    - Consulta por nome de produtos já Cadastrados
+
+CONCLUIDO  ->    * Cadastro de Empenhos
+                - Lista de Empenhos Cadastrados
+                - Caso haja alteração para numero itens contratados de valor menor que existente
+                    dar mensagem que serão excluídos os x últimos itens da
+                    Tabela Itens Contratados.
+    LIBERADO NO MOMENTO -> * Não excluir registro ou alterar numero itens contratados se atributo
+                          ch_bloqueio em Tabela Empenhos for diferente de 'N',
+                          dando a mensagem: Exclusão de Itens Não Permitida.
+
+CONCLUIDO  ->   * Cadastro de Items Contratados
+     LIBERADO NO MOMENTO ->   - Se ch_bloqueio diferente de 'N' em Tab Empenhos bloquear todos os campos para alteração
+
+ESTUDANDO  ->   * Alteração de Items Contratados
+                - Se a data de vigência_valor for menor que a data atual então varrer a
+                    Tabela Items Requeridos de mesmo nr_empenho/nr_itemcontratado da Tabela Itens Contratados,
+                    sendo que para cada registro encontrado gravar em Tab Req Retro um novo registro.
+
+    ===============================================================================
+
+
+    EM DESENVOLVIMENTO -> * Notas Recebidas do Beneficiário
+
+        - Consultar notas e atestar o recebimento da nota fiscal
+        - Gravar em andamento da Tab Requisições "Nota Fiscal Recebida do Beneficiário"
+            e a data atual em dtreceb_auditoria
+
+
+    * Análise da Nota Fiscal
+        - Consultar as notas fiscais
+        - Os erros abaixo devem ser criticados quando do cadastramento do empenho
+            pela Auditoria e do cadastramento da nota fiscal  pelo beneficiário.
+            *data da nota fiscal anterior ao empenho
+            *o empenho exige que se informe o número do contrato
+            *data da requisição posterior a data da nota fiscal
+        - Imprimir Termo de Análise
+        - Imprimir Termo de Devolução
+            *Gravar em andamento da TabRequisições "Nota Aprovada pela Auditoria"
+            ou " Nota Não Aprovada pela Auditoria  e a data atual em dtanalise_auditoria
+
+********************************************************************************************
+
+ORGÃO BENEFICIADO
+
+CONCLUIDO ->    * Cadastro de Requisição
+                    - Só apresenta os empenhos da unidade beneficiária que abriu a sessão do sistema.
+                      A requisição depois de gerada não poderá ser excluída. Se for necessário excluir ela
+                      deverá ficar retida na unidade beneficiada para envio à auditoria que providenciará o estorno.
+                    - A quantidade requerida deve ser menor ou igual ao saldo disponível
+
+CONCLUIDO (FALTA ENVIAR EMAIL E AJUSTES) ->    * Ordem de Requisição
+                    - Relatório em formato PDF e paralelamente grava na página de fornecedor e gerar e-mail
+                        com os seguintes dados: número da autorização, data da autorização e andamento = autorização
+                        emitida.
+                    - Gerada a ordem de requisição gravar '1' no campo ch_bloqueio da TabEmpenhos.
+                        Este campo serve para  indicar que somente será permitido incluir novos itens contratados.
+                        Não sendo permitido alterar demais campos ou excluir registros desta tabela.
+
+CONCLUIDO (FALTA AJUSTAR PDF's ) -> * Recebimento Nota Fiscal
+
+                - Gerar a tabela onde o beneficiário informa a quantidade recebida de items.
+                - O sistema atualiza o valor da tabela de cada item conforme a quantidade informada.
+                - Adicionar Campos para preenchimento da nota:
+                    Razão Social Incorreta
+                    RS da empresa diferente do empenho
+                    Data da NF anterior ao empenho
+                    Data do recebimento anterior a N.F.
+                    Descrição do produto/sv incorreta
+                    Unidade do produto incorreta
+                    Cálculo da NF incorreto
+                    NF com rasura
+                    NF em 2ª. Via
+                    Falta carimbo do recebimento
+                    Recebimento anterior á NF
+                    Falta Ass./nome/Mat. No receb.
+                    CNPJ incorreto
+                    Falta no. Empenho/contrato/proc.
+                    Carimbo ilegível
+                    Valor da NF superior ao emp.
+                    Soma das requis. Difere da NF
+                    Requis. Anteriores ao empenho
+                    Outras Exigências constatadas: campo texto
+
+        - Imprimir termo de Aceite para Auditoria
+        - Imprimir termo de Devolução
+            Motivo do Cancelamento:
+            1.Conveniência Requisitante (estorna do saldo)
+            2.Falha na Entrega (estorna do saldo)
+            3.Aguarda Entrega (não estorna do saldo)
+            Montar Tabela para mudar ordem do questionário e padrão default de resposta.
+
+
+****************************************************************************************
+
+FORNECEDOR
+
+    * Tela de Fornecedor
+        - Lista todas as requisições, notas fiscais, data de autorização e andamento
+            informar no quadro no caso de não existir nenhuma requisição emitida
+            Sempre que houver uma Nota Fiscal deverá existir uma e somente uma Ordem de Requisição
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

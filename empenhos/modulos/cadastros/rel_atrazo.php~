@@ -1,0 +1,91 @@
+<?//echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
+//require "../../lib/loader.php";
+?>
+<script language="javascript" type="text/javascript">//<!--
+
+    function checadata(campo){
+	if(campo.value.length==2){
+		campo.value=campo.value +"/";
+     	}
+	if(campo.value.length==5){
+		campo.value=campo.value +"/";
+	}
+    }
+
+function verifica(valor, campo){
+	var frm = document.frm_rel;
+	if(valor == ""){
+		if(campo == "dt_inicial"){
+		alert("É necessário informar o campo Data Inicial !");
+		setTimeout( function(){forcefocus(frm.dt_inicial);}, 250);
+
+		}
+		if((frm.dt_inicial.value != "")&&(campo == "dt_final")){
+		alert("É necessário informar o campo Data Final !");
+		setTimeout( function(){forcefocus(frm.dt_final);}, 250);
+
+		}
+
+	}
+
+}
+	function forcefocus(campo, timeout) { //alert(campo);
+	var timeout = (timeout == 250) ? 500 : timeout;
+	campo.focus();
+	}
+
+  function enviar() {
+		var frm=document.frm_rel;
+        frm.action='modulos\cadastros\rel_res.php';
+      	frm.submit();
+}
+
+
+
+    function retorna(frm) {
+      window.location.href="rel_atrazo.php";
+    }
+
+//--></script>
+<body onload="ajustaspan()">
+
+<form  target="" enctype="multipart/form-data" method="post" name="frm_rel" onsubmit="return sbmit()" onreset="retorna(this)" action="">
+
+<table width="100%" cellspacing="5" border="0" cellpadding="0" align="center">
+	<tr>
+                <td colspan="4">
+                  <fieldset>
+                    <legend>Periodo do Relatório</legend>
+    <table width="100%" border="0">
+                <tr>
+                  <td width="12%">Data Inicial</td>
+                  <td width="12%"><input name="dt_inicial" type="text" id="dt_inicial" maxlength="10" size="10" class="campo_obr" onKeyUp="checadata(this)" style="text-transform : none;" onblur="verifica(this.value,'dt_inicial')"></td> <td>(dd/mm/aaaa)</td>
+                  <td width="11%">Data Final</td>
+                  <td width="12%"><input name="dt_final" type="text" id="dt_final" maxlength="10" size="10" class="campo_obr" onKeyUp="checadata(this)" style="text-transform : none;" onblur="verifica(this.value,'dt_final')"></td>
+                  <td>(dd/mm/aaaa)</td>
+                </tr>
+	</table>
+            </fieldset>
+            </td>
+	      </tr>
+              <tr>
+                  <td colspan="6" align="center"><br>
+                        <input name="Button" type="button" class="botao" style="background-image : url('../imagens/botao.jpg');" value="Gerar Relat&oacute;rio" onClick="javascript:enviar(this)">
+                  </td>
+               </tr>
+         </tr>
+</table>
+</fieldset>
+</td>
+</tr>
+</table>
+</form>
+<?if($_POST){?>
+    <script language="javascript" type="text/javascript">//<!--
+        var frm = document.frm_rel;
+        frm.dt_inicial.value = "<?=$_POST["dt_inicial"]?>";
+        frm.dt_final.value = "<?=$_POST["dt_final"]?>";
+    </script>
+<?}?>
+</body>

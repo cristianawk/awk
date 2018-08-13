@@ -1,0 +1,229 @@
+<?php
+
+$perfis = null;
+$sql= "SELECT id_perfil, nm_perfil FROM ".TBL_PERFIL." ORDER BY nm_perfil ASC";
+$global_conn->query($sql);
+while($tupla = $global_conn->fetch_row()) $perfis[] = $tupla;
+
+
+$cidades = null;
+$sql= "SELECT id_cidade, nm_cidade FROM ".TBL_CIDADE." WHERE id_estado = 24 ORDER BY nm_cidade";
+$global_conn->query($sql);
+while($tupla = $global_conn->fetch_row()) $cidades[] = $tupla;
+
+$estados = null;
+$sql= "SELECT ds_uf, nm_estado FROM ".TBL_ESTADO." ORDER BY nm_estado";
+$global_conn->query($sql);
+while($tupla = $global_conn->fetch_row()) $estados[] = $tupla;
+
+?>
+<body>
+<fieldset>
+<legend>RECEBIMENTO_001</legend>
+<form target="_self" enctype="multipart/form-data" method="post" name="frm_usuarios" id="frm_usuarios" onsubmit="submitForm(); return false;" action="./modulos/cadastros/inc_recebimento.php">
+<input type="hidden" name="op_menu" id="op_menu" value="<?=$id_load?>">
+<table border="0" width="100%" cellspacing="0" cellpadding="4" class="orgTable">
+<tr><th colspan="2" id="mesg">&nbsp;</th></tr>
+<tr>
+	<td>NUMERO DO EMPENHO:</td>
+	<td><input type="text" name="ds_empenho" id="ds_empenho" value="" size="12" maxlength="12" class="" onblur="consultaReg(this,'0')">&nbsp(ex: 2011NE000035)</td>
+</tr>
+<tr>
+	<td>UNIDADE ORCAMENTARIA:</td>
+	<td><input type="text" name="nr_orcamentaria" id="nr_orcamentaria" value="" size="10" maxlength="10" class="">&nbsp(Somente Numeros)</td>
+</tr>
+<tr>
+	<td>SUBACAO:</td>
+	<td><input type="text" name="nr_subacao" id="nr_subacao" value="" maxlength="4" size="4" class="" onblur="validanum(this,'0')"></td>
+</tr>
+<tr>
+	<td>NATUREZA DA DESPESA:</td>
+	<td><input type="text" name="nr_despesa" id="nr_despesa" value="" size="12" maxlength="12" class="">&nbsp(Somente Numeros)</td>
+</tr>
+<tr>
+	<td>FONTE DE RECURSO:</td>
+	<td><input type="text" name="nr_fonte_recursos" id="nr_fonte_recursos" value="" size="4" maxlength="4" class="" onblur="validanum(this,'4')">&nbsp(Somente Numeros)</td>
+</tr>
+
+<tr>
+	<td>DATA DO EMPENHO:</td>
+	<td><input type="text"  name="dt_empenho" id="dt_empenho" value="" size="10" class="campo_obr" onkeypress="return formtData(this, event);" onkeyup="checadata(this)" onblur="checkDate(this)" maxlength="10"></td>
+</tr>
+<tr>
+	<td>DATA DO PAGAMENTO:</td>
+	<td><input type="text"  name="dt_pagamento" id="dt_pagamento" value="" size="10" class="campo_obr" onkeypress="return formtData(this, event);" onkeyup="checadata(this)" onblur="checkDate(this)" maxlength="10"></td>
+</tr>
+<tr>
+	<td>VALOR REPASSADO:</td>
+	<td><input type="text" name="ds_repasse" id="ds_repasse" value="" size="35" onblur="decimal(this,2);FormatNumero(this)"></td>
+</tr>
+<tr>
+	<td>DATA RECEBIMENTO:</td>
+	<td><input type="text"  name="dt_recebimento" id="dt_recebimento" value="" size="10" class="campo_obr" onkeypress="return formtData(this, event);" onkeyup="checadata(this)" onblur="checkDate(this)" maxlength="10"></td>
+</tr>
+<tr>
+	<td>DATA DEVOLUCAO:</td>
+	<td><input type="text"  name="dt_devolucao" id="dt_devolucao" value="" size="10" class="campo_obr" onkeypress="return formtData(this, event);" onkeyup="checadata(this)" onblur="checkDate(this)" maxlength="10"></td>
+</tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="4"><hr></th></tr>
+<tr>
+    <th colspan="4">
+        <input type="submit" name="btn_incluir" id="btn_incluir" value="CADASTRAR" class="botao">
+    </th>
+</tr>
+</table>
+</form>
+</fieldset>
+</body>
+<script type="text/javascript">
+
+	var frm_usuarios = new Validation('frm_usuarios');
+
+	Validation.addAllThese([
+		['validate-password', 'Sua senha deve ter mais de 6 caracteres', {
+			minLength : 7,
+			notOneOf : ['password','PASSWORD','1234567','0123456'],
+		}],
+		['validate-password-confirm', 'Sua confirmação de senha não bateu com a primeira digitada. Por favor tente novamente.', {
+			equalToField : 'ps_senha'
+		}]
+	]);
+
+	function submitForm(){
+
+		if(frm_usuarios.validate()){
+			$('frm_usuarios').request({
+				method: 'get',
+				parameters: { 'filtro[]':['btn_incluir', 'op_menu', 'filtro', 'ps_senha_aux'] },
+				onComplete: function(transport){
+					alert(transport.responseText);// exit;
+					var xmldoc=transport.responseXML;
+					//alert(xmldoc);
+					var flg = xmldoc.getElementsByTagName('flg')[0].firstChild.data;
+					//alert(flg);
+					if(flg == 1){
+					//  if(true){
+						loadMesg(xmldoc.getElementsByTagName('mesg')[0].firstChild.data, 'acerto');
+						$('frm_usuarios').reset();
+					}else{
+						loadMesg(xmldoc.getElementsByTagName('mesg')[0].firstChild.data, 'erro');
+					}
+				}
+			});
+		}
+
+		return false;
+	}
+
+	function loadMesg(msg, optClass){
+
+		$('mesg').innerHTML = "<div class='"+optClass+"'>"+msg+"</div>"
+
+		location.href='index.php#';
+
+		setTimeout(function(){ $('mesg').innerHTML = '&nbsp;' }, 8000);
+
+	}
+
+
+function FormatNumero(campo) {
+  if (campo.type=='text') {
+    var textFormat = "";
+    var t=0;
+    var str=campo.value;
+    var dec= new Array;
+    for (var j = 0; j < campo.value.length ; j++) {
+      if (campo.value.indexOf(",")>(-1)) {
+        dec=campo.value.split(",");
+        str=dec[0];
+      }
+    }
+    for (var j = 0; j < str.length ; j++) {
+      str=str.replace('.','');
+    }
+    if (str.length != 0) {
+      for (var k = str.length-1; k>=0 ; k--) {
+        t++;
+        if (t % 3 == 0) {
+          textFormat = "." + str.substr(k,1) + textFormat;
+        } else {
+          textFormat =  str.substr(k,1) + textFormat;
+        }
+      }
+      if (textFormat.substr(0,1) == ".") {
+        campo.value = textFormat.substr(1,textFormat.length-1);
+      } else {
+        campo.value = textFormat;
+      }
+    }
+    if (dec.length>0) {
+      campo.value+=","+dec[1];
+    }
+  }
+}
+
+function decimal(campo,precisao) {
+  var dec=campo.value.split(",");
+  var str=",";
+  if (precisao==0) {
+    campo.value=dec[0];
+    return true;
+  }
+  if (dec.length>1) {
+    for (var i=0;i<precisao;i++) {
+      if (dec[1].substr(i,1)!="") {
+        str+=dec[1].substr(i,1);
+      } else {
+        str+="0";
+      }
+    }
+  } else {
+    for (var i=0;i<precisao;i++) {
+        str+="0";
+    }
+  }
+  campo.value=dec[0]+str;
+  return true;
+}
+
+	function checadata(campo){
+	  if(campo.value.length==2){
+	    campo.value=campo.value +"/";
+	  }
+	  if(campo.value.length==5){
+	    campo.value=campo.value +"/";
+	  }
+	}
+
+	function validanum(dados,flag){//alert(flag); 
+	  if (isNaN(dados.value)) {//alert('entrou');
+	    alert('Somente numeros sao permitidos');
+	    dados.focus();
+	    dados.value="";
+	  }
+	  if(flag=='4'){//alert('incrementa 4');
+	    while(dados.value.length!='4'){//alert('4');
+	      dados.value='0'+dados.value;
+	      //alert(dados.value);
+	    }
+	  }
+	}
+
+
+    function consultaReg(campo,flag) {//alert(campo.value); //exit;
+      if (campo.value!="") {
+//     if (isNaN(campo.value)) {
+// 	    //alert('Somente numeros sao permitidos');
+//             flag='1';
+//       }
+        if(flag == "0"){//alert('zero');//exit;
+            window.open("modulos/cadastros/cons_recebimento.php?campo="+campo.value+"&flag="+flag,"consulusr","top=5000,left=5000,screenY=5000,screenX=5000,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=no,resizable=no,width=1,height=1,innerwidth=1,innerheight=1");
+        }
+        if(flag == "1"){//alert('um');//exit;
+            window.open("modulos/cadastros/cons_recebimento.php?campo="+campo.value+"&flag="+flag,"consulusr","top=0,left=0,screenY=0,screenX=0,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=no,width=780,height=400,innerwidth=780,innerheight=400");
+        }
+      }
+    }
+
+</script>

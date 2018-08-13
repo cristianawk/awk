@@ -1,0 +1,141 @@
+<?php
+
+$perfis = null;
+$sql= "SELECT id_perfil, nm_perfil FROM ".TBL_PERFIL." ORDER BY nm_perfil ASC";
+$global_conn->query($sql);
+while($tupla = $global_conn->fetch_row()) $perfis[] = $tupla;
+
+
+$cidades = null;
+$sql= "SELECT id_cidade, nm_cidade FROM ".TBL_CIDADE." WHERE id_estado = 24 ORDER BY nm_cidade";
+$global_conn->query($sql);
+while($tupla = $global_conn->fetch_row()) $cidades[] = $tupla;
+
+$tipos = array(
+    '<option>N. Empenho</option>',
+    '<option>Data do Empenho</option>',
+    '<option>Nome do Gestor</option>',
+    '<option>Matricula do Gestor</option>',
+    '<option>CPF Gestor</option>',    
+    '<option>Valor Repassado</option>'
+);
+
+?>
+<fieldset>
+<legend>RECEBIMENTO_001</legend>
+<form target="_self" enctype="multipart/form-data" method="post" name="frm_viatura" id="frm_viatura" onsubmit="submitForm(); return false;" action="./modulos/cadastros/inc_recebimento.php">
+<input type="hidden" name="op_menu" id="op_menu" value="<?=$id_load?>">
+<input type="hidden" name="id_cidade" id="id_cidade" value="<?=$cidade_usuario?>">
+<table border="0" width="100%" cellspacing="0" cellpadding="4" class="orgTable">
+<tr><th colspan="2" id="mesg">&nbsp;</th></tr>
+		<tr>
+         <th align="right">Tipo:</th>
+          <td>
+           <select name="tipo" id="tipo" class="campo_obr">
+            <option value="">--------------</option>
+			<?
+			foreach($tipos AS $tipo){
+			echo $tipo."\n";
+			}
+			?>
+           </select>
+          </td>
+        </tr>
+<tr>
+	<td></td>
+	<td><input type="text" name="dados" id="dados" value="" size="12" maxlength="12" class="" </td>
+</tr>
+<tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="4"><hr></th></tr>
+<tr>
+    <th colspan="4">
+        <input type="button" name="btn_incluir" id="btn_incluir" value="PESQUISAR" class="botao" onclick="loadVTR()">
+    </th>
+</tr>
+</table>
+</form>
+</fieldset>
+<script type="text/javascript">
+
+//Variavel para janela
+var globalWin = "";
+var childWin = "";
+
+var largura = window.innerWidth - ((window.innerWidth / 100) * 20);
+var altura = window.innerHeight - ((window.innerHeight / 100) * 20);
+
+var frm_viatura = new Validation('frm_viatura');
+
+	function submitForm(){
+
+		if(frm_viatura.validate()){
+			$('frm_viatura').request({
+				method: 'get',
+				parameters: { 'filtro[]':['btn_incluir', 'op_menu', 'filtro'] },
+				onComplete: function(transport){
+					alert(transport.responseText); exit;
+					var xmldoc=transport.responseXML;
+					//alert(xmldoc);
+					var flg = xmldoc.getElementsByTagName('flg')[0].firstChild.data;
+					//alert(flg);
+					if(flg == 1){
+						loadMesg(xmldoc.getElementsByTagName('mesg')[0].firstChild.data, 'acerto');
+						$('frm_viatura').reset();
+					}else{
+						loadMesg(xmldoc.getElementsByTagName('mesg')[0].firstChild.data, 'erro');
+					}
+				}
+			})
+		}
+
+		return false;
+	}
+
+	function loadMesg(msg, optClass){
+
+		loadVTR();
+
+		$('mesg').innerHTML = "<div class='"+optClass+"'>"+msg+"</div>"
+
+		setTimeout(function(){ $('mesg').innerHTML = '&nbsp;' }, 8000);
+
+	}
+
+	function loadVTR(){
+		new Ajax.Request('./modulos/cadastros/cons_recebimento.php', {
+			method: 'get',
+			parameters: 'id_cidade=<?=$cidade_usuario?>&tipo='+$('tipo').value+'&dados='+$('dados').value,
+			onComplete: function(transport){
+				//alert(transport.responseText); exit;
+				$('vtr').innerHTML = transport.responseText;
+			}
+		});
+	}
+
+	loadVTR();
+
+function recebimento(tipo, dado){
+//alert(tipo);
+//alert(dado);
+	if(globalWin != ""){ globalWin.destroy(); }//alert('entra aqui');
+	
+	globalWin = new Window("recebimento", {
+		className: "alphacube",
+		width:largura,
+		height:altura,
+		title:"Controle de Prazos",
+		url: "./modulos/cadastros/inc_recebimento.php?tipo="+tipo+"&dado="+dado,
+		showEffectOptions: {duration:0.1},
+		//destroyOnClose: true,
+		minimizable: false
+	});
+	globalWin.showCenter();
+}
+
+</script>
+<br>
+<fieldset>
+<legend>REGISTROS ENCONTRADOS: </legend>
+<div id="vtr"></div>
+</fieldset>

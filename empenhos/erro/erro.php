@@ -1,0 +1,25 @@
+<?php
+$erro = $_GET['e'];
+
+switch($erro){
+
+	case '1' : $msg = "USUÁRIO SEM ACESSO A PÁGINA SOLICITADA.";
+				$onclick = "javascript:history.back()";
+				$botao_value = "VOLTAR";
+				break;
+
+	case '2' : $msg = "A SESSAO DE LOGIN EXPIROU. REALIZE UM NOVO LOGIN NO SISTEMA.";
+				$onclick = "javascript:window.location.href='../index.php'";
+				$botao_value = "INICIO";
+				break;
+
+
+
+}
+
+?>
+<link rel="stylesheet" type="text/css" href="../css/dlf.css">
+<table border="0" cellspacing="4" cellpadding="4" align="center" width="100%">
+	<tr><td class="erro"><?=$msg?></td></tr>
+	<tr><th><input type="button" name="btn_v" value="<?=$botao_value?>" onclick="<?=$onclick?>"></th></tr>
+</table>

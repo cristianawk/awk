@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/class/connection.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/cons_tabela_item.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/email.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/formata.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/fornpass.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/mudapass.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/class/session.class.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/js/audita.js" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/importar_produto.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_empenho.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_fornecedor.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_import_empenho.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_import_fornecedor.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_import_produto.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_import_ub.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_orgaos.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_perfilamento.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/inc_usuario.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/lista_empenhos.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/lista_fornecedores.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/lista_produtos.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/mail_empenho.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/modulos/administrativo/relatorio_itenscontratadosporempresa.php" charset="ISO-8859-1" />
+  </component>
+</project>

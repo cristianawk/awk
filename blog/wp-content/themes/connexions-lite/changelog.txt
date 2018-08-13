@@ -1,0 +1,29 @@
+= 1.0.6 =
+* WP 4.6.1 compatible.
+* Fixed Social links issues.
+
+= 1.0.5 =
+* WP 4.6 compatible.
+* Updated Font Awesome Icons.
+* Added social links.
+* Removed unused css.
+* Fix translation issues.
+
+= 1.0.4 =
+* Fixed latest post page setting issue.
+
+= 1.0.3 =
+* Changed framework to customizer.
+* Updated Font Awesome Icons.
+
+= 1.0.2 =
+* Added Licensing information.
+* Fixed sanitization and esacaping issue.
+
+= 1.0.1 =
+* Updated Font Awesome Icons.
+* Fixed sanitization and esacaping issue.
+* Fixed next/previous link layout.
+
+= 1.0.0 =
+* Initial release

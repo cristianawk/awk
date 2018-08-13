@@ -1,0 +1,72 @@
+
+
+.woocommerce div.product .woocommerce-tabs .panel {
+  padding: 5px 5px;
+}
+
+.woocommerce ul.product_list_widget, .woocommerce.widget_rating_filter ul {
+  padding-left: 10px;
+}
+
+.single-product .product_meta span {
+  clear: both;
+  display: block;
+  font-style: italic;
+  padding-top: 5px;
+}
+
+.single-product .product_meta span a {
+  letter-spacing: 0.5px;
+}
+
+.woocommerce ul.cart_list li img, .woocommerce ul.product_list_widget li img {
+  width: 63px;
+}
+
+.woocommerce form .form-row input.input-text, .woocommerce form .form-row textarea {
+   padding: 10px;
+}
+
+.woobreadcrumbdelimiter {
+  font-size: 10px;
+}
+
+.woocommerce #reviews #comments ol.commentlist li .comment-text {
+  padding: 1em 1em 14px 10px;
+}
+
+.woocommerce div.product {
+  margin-top: 24px;
+}
+
+.woocommerce .left-content h1.page-title {
+  border-left: 3px solid;
+  padding: 9px 14px;
+}
+
+.coupon #coupon_code {
+  height: 31px;
+  width: 143px;
+}
+
+.related ul.products li  {
+  clear: none  !important;
+  margin: 0 2% 2.992em 0 !important;
+}
+
+table.variations .label {
+  color: #565656;
+  position: relative;
+  top: 10px;
+}
+
+.single_variation_wrap .quantity .input-text, .cart .quantity .input-text {
+  padding: 5px;
+  width: 64px;
+}
+
+
+
+
+
+

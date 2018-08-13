@@ -1,0 +1,172 @@
+<?php
+/**
+ * classe session
+ * Gerencia uma seção com o usuário
+ */
+class session{
+    /**
+     * método construtor
+     * inicializa uma seção
+     */
+    function __construct(){
+        session_start();
+    }
+
+    /**
+     * método setLogin()
+     * Armazena uma variável na seção
+     * @param  $username   = login do usuario
+     * @param  $password   = senha do usuário
+     */
+    function setLogin($username, $password){
+		
+		//Zera a variavel de sessão
+		$_SESSION = array();
+
+        $sql = sprintf("SELECT id_usuario, nm_usuario, id_perfil, id_unidade, nm_perfil, nm_unidade FROM vw_usuarios WHERE ps_senha = '%s' AND nm_login = '%s'", trim(md5($password)), trim($username));
+        //echo $sql; 
+		//inicia a conexão
+        $c = connection::init();
+		//executa a query
+        $c->query($sql);
+        
+		//pega o numero de registro
+        $n = $c->num_rows();
+		echo $n;
+        if($n > 0){
+			//pega o registro
+			$tupla = $c->fetch_row();
+			session::setValue($tupla);
+			return true;
+
+		}else{
+
+			//Limpa a sessão
+			//self::freeSession();
+			return false;
+
+		}
+
+		connection::close();
+
+    }
+
+
+    /**
+     * método setEmpenho()
+     * @param  $fornecededor_cnpj   	= cnpj fornecedor
+     * @param  $fornecededor_empenho   	= empenho do fornecedor
+     */
+    function setEmpenho($fornecededor_cnpj, $fornecededor_empenho){
+
+		//Zera a variavel de sessão
+		$_SESSION = array();
+
+
+        $sql = sprintf("SELECT a.id_fornecedor, a.nm_fornecedor, a.ds_cnpj, b.id_empenho, b.ds_empenho, c.id_unidade, c.nm_unidade
+						FROM fornecedores AS a JOIN empenhos AS b USING (id_fornecedor)
+						JOIN unidades_beneficiadas AS c USING (id_unidade)
+						WHERE a.ds_cnpj = '%s' AND b.ds_empenho = '%s'", trim($fornecededor_cnpj), trim(strtoupper($fornecededor_empenho)));
+
+        //echo $sql;
+        //inicia a conexão
+        $c = connection::init();
+        //executa a query
+        $c->query($sql);
+        //pega o numero de registro
+        $n = $c->num_rows();
+		//echo "NUMERO: ".$n;
+        if($n > 0){
+			//pega o registro
+			$tupla = $c->fetch_row();
+			session::setValue($tupla);
+			return true;
+
+		}else{
+
+			//Limpa a sessão
+			//self::freeSession();
+			return false;
+
+		}
+
+		connection::close();
+
+    }
+
+
+    /**
+     * método setFornecedor()
+     * @param  $fornecededor_cnpj   	= cnpj fornecedor
+     * @param  $fornecededor_password   	= senha do fornecedor
+     */
+    function setFornecedor($fornecededor_cnpj, $fornecededor_password){
+
+		//Zera a variavel de sessão
+		$_SESSION = array();
+
+
+        $sql = sprintf("SELECT id_fornecedor, nm_fornecedor, ds_cnpj FROM fornecedores
+						WHERE ds_cnpj = '%s' AND ps_senha = '%s'", trim($fornecededor_cnpj), trim(strtoupper($fornecededor_password)));
+
+        //echo $sql; exit;
+        //inicia a conexão
+        $c = connection::init();
+        //executa a query
+        $c->query($sql);
+        //pega o numero de registro
+        $n = $c->num_rows();
+		//echo "NUMERO: ".$n;
+        if($n > 0){
+			//pega o registro
+			$tupla = $c->fetch_row();
+			session::setValue($tupla);
+			return true;
+
+		}else{
+
+			//Limpa a sessão
+			//self::freeSession();
+			return false;
+
+		}
+
+		connection::close();
+
+    }
+
+
+
+    /**
+     * método setValue()
+     * Armazena uma variável na seção
+     * @param  $arrayValues   = array com o Nome da variável e seus valores
+     */
+    function setValue($arrayValues){
+        foreach($arrayValues AS $var => $value){
+            //echo "$var => $value<br>";
+			$_SESSION[$var] = $value;
+		}
+    }
+
+    /**
+     * método getValue()
+     * Retorna uma variável da seção
+     * @param  $var   = Nome da variável
+     */
+    function getValue($var){
+		if(array_key_exists($var, $_SESSION)){
+			return $_SESSION[$var];
+		}
+    }
+
+    /**
+     * método freeSession()
+     * Destrói os dados de uma seção
+     */
+    function freeSession(){
+        $_SESSION = array();
+        session_destroy();
+    }
+}
+?>

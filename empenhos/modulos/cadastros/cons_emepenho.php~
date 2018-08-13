@@ -1,0 +1,424 @@
+<?
+echo "<pre>"; print_r($_GET); echo "</pre>"; exit;
+require "../../lib/loader.php";
+
+    function data($data){
+        $aux = explode("-", $data);
+        $valor = $aux[2]."/".$aux[1]."/".$aux[0];
+        return $valor;
+    }
+
+if(@$_GET["flag"]=="2"){
+
+  $guerra	=	$_GET["campo"];
+  $posto	=	$_GET["campo2"];
+  $obm		=	$_GET["campo3"];
+/*
+echo $guerra."<br>";
+echo $obm."<br>";
+echo $posto."<br>";exit;*/
+
+	$query="SELECT id_matricula, ef.id_perfil, ef.id_obm, ef.id_posto_guarnicao,ef.nm_guerra, ef.nm_bombeiro, de_email, nr_fone, nr_celular, nr_voip, nm_login, ch_bomb_comunitario, nr_fone_conjugue, dt_nascimento, cep, cidade, bairro, estado, logradouro, sexo FROM ".TBL_EFETIVO." AS ef Left JOIN ".TBL_OBMS." AS obm ON (ef.id_obm=obm.id_obm) Left JOIN ".TBL_POSTO_GRADUACAO." AS pg ON (ef.id_posto_guarnicao=pg.id_posto_guarnicao) where ef.id_obm= $obm and ef.id_posto_guarnicao= $posto and ef.nm_guerra like '$guerra'";
+    	//echo $query; exit;
+	$conn->query($query);
+	if ($conn->get_status()==false) {
+                      die($conn->get_msg());
+                    }
+	$rows = $conn->num_rows();
+	//echo $rows; exit;
+	if($rows>0){
+	$tupula = $conn->fetch_row();
+	
+	?>
+<script language="javascript" type="text/javascript">//<!--
+var frm_cons=window.opener.document.frm_usuario;
+if (window.opener.confirm("Existe Registro para esta Matricula. Deseja Carregar?")) {
+
+  frm_cons.txt_id_matricula.value="<?=$tupula["id_matricula"]?>";
+  frm_cons.txt_nm_usuario.value="<?=$tupula["nm_bombeiro"]?>";
+  frm_cons.txt_login.value="<?=(strtolower($tupula["nm_login"]))?>";
+  frm_cons.cmb_perfil.value="<?=$tupula["id_perfil"]?>";
+  frm_cons.cmb_id_posto.value="<?=$tupula["id_posto_guarnicao"]?>";
+  frm_cons.txt_nr_cel.value="<?=$tupula["nr_celular"]?>";
+  frm_cons.txt_nr_fone.value="<?=$tupula["nr_fone"]?>";
+  frm_cons.txt_nr_voip.value="<?=$tupula["nr_voip"]?>";
+  frm_cons.txt_email.value="<?=(strtolower($tupula["de_email"]))?>";
+  frm_cons.cmb_bomb_comunitario.value="<?=$tupula["ch_bomb_comunitario"]?>";
+  frm_cons.txt_nm_guerra.value="<?=$tupula["nm_guerra"]?>";
+  frm_cons.cmb_id_cidade.value="<?=$tupula["id_obm"]?>";
+
+    frm_cons.fone_conjugue.value="<?=$tupula["nr_fone_conjugue"]?>";
+    frm_cons.dt_nascimento.value="<?=data($tupula["dt_nascimento"])?>";
+    frm_cons.txt_cep.value="<?=$tupula["cep"]?>";
+    frm_cons.txt_cidade.value="<?=$tupula["cidade"]?>";
+    frm_cons.txt_bairro.value="<?=$tupula["bairro"]?>";
+    frm_cons.txt_nm_edificacao.value="<?=$tupula["logradouro"]?>";
+    frm_cons.cmb_estado.value="<?=$tupula["estado"]?>";
+
+	frm_cons.cmb_sexo.value="<?=$tupula["sexo"]?>";
+
+<?
+      if ($global_alteracao=="S") {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+<?
+      } else {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  //alert(frm_cons.btn_incluir.style.backgroundImage);
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+  frm_cons.btn_incluir.disabled=true;
+<?
+      }
+?>
+  frm_cons.hdn_controle.value="2"; 
+  //frm_cons.txt_id_matricula.readOnly=true;
+} else {
+  frm_cons.txt_id_matricula.value="";
+  frm_cons.txt_id_matricula.focus();
+}
+// -->	
+	window.close();
+</script>
+ 	  <?  
+		}else{
+    
+    ?>
+<script language="javascript" type="text/javascript">
+	var frm_cons=window.opener.document.frm_usuario;
+	alert("Usuï¿½rio nï¿½o encontrado!");
+	//window.opener.document.location.reload();
+	frm_cons.txt_id_matricula.value="";
+	frm_cons.txt_nm_usuario.value="";
+	frm_cons.txt_login.value="";
+	frm_cons.cmb_perfil.value="";
+	frm_cons.cmb_id_posto.value="";
+	frm_cons.txt_nr_cel.value="";
+	frm_cons.txt_nr_fone.value="";
+	frm_cons.txt_nr_voip.value="";
+	frm_cons.txt_email.value="";
+	frm_cons.cmb_bomb_comunitario.value="";
+	frm_cons.txt_nm_guerra.value="";
+	frm_cons.cmb_id_cidade.value="";
+	frm_cons.cmb_id_cidade.focus();
+
+    frm_cons.fone_conjugue.value="";
+    frm_cons.dt_nascimento.value="";
+    frm_cons.txt_cep.value="";
+    frm_cons.txt_cidade.value="";
+    frm_cons.txt_bairro.value="";
+    frm_cons.txt_nm_edificacao.value="";
+    frm_cons.cmb_estado.value="";
+	frm_cons.cmb_sexo.value="";
+  	frm_cons.btn_incluir.value="Incluir";
+    frm_cons.hdn_controle.value="1";	
+</script>
+  <?}
+pg_close();
+?>
+<script language="JavaScript" type="text/javascript">
+  window.close();
+</script>
+<?
+exit;
+}
+if ((@$_GET["campo"]!="")||(@$_GET["flag"]=="0")) {
+    if(@$_GET["flag"]=="0"){
+    	$matricula=strtoupper(@$_GET["campo"]);
+    	if(!is_numeric($matricula)){
+?>
+	<script language="javascript" type="text/javascript">
+    		  var frm_cons=window.opener.document.frm_usuario;
+ 		      window.alert("O campo Matricula deve conter apenas nï¿½meros!!");
+ 		      frm_cons.txt_id_matricula.focus();
+ 		      frm_cons.txt_id_matricula.value="";
+			  frm_cons.txt_nm_usuario.value="";
+			  frm_cons.txt_login.value="";
+			  frm_cons.cmb_perfil.value="";
+			  frm_cons.cmb_id_posto.value="";
+			  frm_cons.txt_nr_cel.value="";
+			  frm_cons.txt_nr_fone.value="";
+			  frm_cons.txt_nr_voip.value="";
+			  frm_cons.txt_email.value="";
+			  frm_cons.cmb_bomb_comunitario.value="";
+			  frm_cons.txt_nm_guerra.value="";
+			  frm_cons.cmb_id_cidade.value="";
+              frm_cons.fone_conjugue.value="";
+              frm_cons.dt_nascimento.value="";
+              frm_cons.txt_cep.value="";
+              frm_cons.txt_cidade.value="";
+              frm_cons.txt_bairro.value="";
+              frm_cons.txt_nm_edificacao.value="";
+              frm_cons.cmb_estado.value="";
+				frm_cons.cmb_sexo.value="";      
+	 		  frm_cons.btn_incluir.value="Incluir";
+    		  frm_cons.hdn_controle.value="1";
+    		  window.close();
+ 		    </script>
+ 	    <?
+ 	    }
+
+    	$query="SELECT id_matricula, id_perfil, id_obm, id_posto_guarnicao, nm_guerra, nm_bombeiro, de_email, nr_fone, nr_celular, nr_voip, nm_login, ch_bomb_comunitario FROM ".TBL_EFETIVO." WHERE id_matricula='".$matricula."'";
+    	$conn->query($query);
+        //echo $query;exit;
+        $rows = $conn->num_rows();
+        //echo "<BR>rows=".$rows;
+        if ($rows>0){
+        $tupula = $conn->fetch_row();
+        $nome = $tupula["nm_bombeiro"];
+?>
+<script language="javascript" type="text/javascript">//<!--
+var frm_cons=window.opener.document.frm_usuario;
+if (window.opener.confirm("Existe Registro para esta Matricula. Deseja Carregar?")) {
+
+  frm_cons.txt_id_matricula.value="<?=$tupula["id_matricula"]?>";
+  frm_cons.txt_nm_usuario.value="<?=$tupula["nm_bombeiro"]?>";
+  frm_cons.txt_login.value="<?=(strtolower($tupula["nm_login"]))?>";
+  frm_cons.cmb_perfil.value="<?=$tupula["id_perfil"]?>";
+  frm_cons.cmb_id_posto.value="<?=$tupula["id_posto_guarnicao"]?>";
+  frm_cons.txt_nr_cel.value="<?=$tupula["nr_celular"]?>";
+  frm_cons.txt_nr_fone.value="<?=$tupula["nr_fone"]?>";
+  frm_cons.txt_nr_voip.value="<?=$tupula["nr_voip"]?>";
+  frm_cons.txt_email.value="<?=(strtolower($tupula["de_email"]))?>";
+  frm_cons.cmb_bomb_comunitario.value="<?=$tupula["ch_bomb_comunitario"]?>";
+  frm_cons.txt_nm_guerra.value="<?=$tupula["nm_guerra"]?>";
+  frm_cons.cmb_id_cidade.value="<?=$tupula["id_obm"]?>";
+
+    frm_cons.fone_conjugue.value="<?=$tupula["nr_fone_conjugue"]?>";
+    frm_cons.dt_nascimento.value="<?=data($tupula["dt_nascimento"])?>";
+    frm_cons.txt_cep.value="<?=$tupula["cep"]?>";
+    frm_cons.txt_cidade.value="<?=$tupula["cidade"]?>";
+    frm_cons.txt_bairro.value="<?=$tupula["bairro"]?>";
+    frm_cons.txt_nm_edificacao.value="<?=$tupula["logradouro"]?>";
+    frm_cons.cmb_estado.value="<?=$tupula["estado"]?>";
+	frm_cons.cmb_sexo.value="<?=$tupula["sexo"]?>";
+<?
+      if ($global_alteracao=="S") {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+<?
+      } else {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  //alert(frm_cons.btn_incluir.style.backgroundImage);
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+  frm_cons.btn_incluir.disabled=true;
+<?
+      }
+?>
+  frm_cons.hdn_controle.value="2"; 
+  //frm_cons.txt_id_matricula.readOnly=true;
+}
+	window.location.href="cons_especialidade.php?id_matricula=<?=$tupula["id_matricula"]?>";
+//window.close();
+// -->
+</script>
+<?
+    }else{
+?>
+<script language="javascript" type="text/javascript">
+    var frm_cons=window.opener.document.frm_usuario;
+    alert("Usuï¿½rio nï¿½o encontrado!");
+	//window.opener.document.location.reload();
+	frm_cons.txt_id_matricula.value="<?=$matricula?>";
+    //frm_cons.txt_id_matricula.focus();
+    frm_cons.txt_nm_usuario.value="";
+    frm_cons.txt_login.value="";
+    frm_cons.cmb_perfil.value="";
+    frm_cons.cmb_id_posto.value="";
+    frm_cons.txt_nr_cel.value="";
+    frm_cons.txt_nr_fone.value="";
+    frm_cons.txt_nr_voip.value="";
+    frm_cons.txt_email.value="";
+    frm_cons.cmb_bomb_comunitario.value="";
+    frm_cons.txt_nm_guerra.value="";
+    frm_cons.cmb_id_cidade.value="";
+    frm_cons.fone_conjugue.value="";
+    frm_cons.dt_nascimento.value="";
+    frm_cons.txt_cep.value="";
+    frm_cons.txt_cidade.value="";
+    frm_cons.txt_bairro.value="";
+    frm_cons.txt_nm_edificacao.value="";
+    frm_cons.cmb_sexo.value="";      
+    frm_cons.cmb_estado.value="";      
+    frm_cons.btn_incluir.value="Incluir";
+    frm_cons.hdn_controle.value="1";
+	window.location.href="cons_especialidade.php?id_matricula=";
+//window.close();
+</script>
+  <?}
+    
+    }elseif($_GET["flag"] =="1"){
+    	$nome=strtoupper(@$_GET["campo"]);
+    	$query="SELECT id_matricula, id_perfil, id_obm, id_posto_guarnicao, nm_guerra, nm_bombeiro, de_email, nr_fone, nr_celular, nr_voip, nm_login, ch_bomb_comunitario FROM ".TBL_EFETIVO." WHERE nm_bombeiro like '%".$nome."%' ORDER BY nm_bombeiro";
+    	$conn->query($query);//echo "query: ".$query;exit;
+        while($tupla = $conn->fetch_row()) $bombeiros[] = $tupla;
+?>
+<style type="text/css">
+.table{
+    background: #EFEFEF;
+}
+.head{
+    background: #AFC0BD;
+	font-size: 12px;
+    font-family: monospace;
+}
+.cab{
+    background: #DAE6E5;
+	font-size: 12px;
+    font-family: monospace;
+}
+
+.linA{
+    background: #DDD9E6;
+    font-size: 11px;
+	cursor:pointer;
+	text-transform : uppercase;
+	font-family: monospace;
+}
+
+.linB{
+    background: #F2F2F2;
+    font-size: 11px;
+	cursor:pointer;
+	text-transform : uppercase;
+	font-family: monospace;
+}
+
+tr.linA:hover{
+    background: #CDEEFF;
+}
+
+tr.linB:hover{
+    background: #CDEEFF;
+}
+
+.pe{
+    background: #DAE6E5;
+    font-family: serif;
+    font-size: 12px;
+}
+.erro{
+    background: #FF0000;
+    color: #FFF;
+}
+</style>
+
+<script type="text/javascript">
+
+    function sbmit(matricula, perfil, obm, posto, guerra, bombeiro, email, fone, celular, voip, login, comuni, conjugue, nulo, cep, cidade, bairro, estado, logradouro, sexo, date){
+
+		var frm_cons=window.opener.document.frm_usuario;
+        frm_cons.txt_id_matricula.value=matricula;
+        frm_cons.txt_nm_usuario.value=bombeiro;
+        frm_cons.txt_login.value=login;
+        frm_cons.cmb_perfil.value=perfil;
+        frm_cons.cmb_id_posto.value=posto;
+        frm_cons.txt_nr_cel.value=celular;
+        frm_cons.txt_nr_fone.value=fone;
+        frm_cons.txt_nr_voip.value=voip;
+        frm_cons.txt_email.value=email;
+        frm_cons.cmb_bomb_comunitario.value=comuni;
+        frm_cons.txt_nm_guerra.value=guerra;
+        frm_cons.cmb_id_cidade.value=obm;
+
+    frm_cons.fone_conjugue.value=conjugue;
+    frm_cons.dt_nascimento.value=date;
+    frm_cons.txt_cep.value=cep;
+    frm_cons.txt_cidade.value=cidade;
+    frm_cons.txt_bairro.value=bairro;
+    frm_cons.txt_nm_edificacao.value=logradouro;
+    frm_cons.cmb_estado.value=estado;
+	frm_cons.cmb_sexo.value=sexo;
+<?
+      if ($global_alteracao=="S") {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+<?
+      } else {
+?>
+  frm_cons.btn_incluir.disabled=false;
+  frm_cons.btn_incluir.value="Alterar";
+  //alert(frm_cons.btn_incluir.style.backgroundImage);
+  frm_cons.btn_incluir.style.backgroundImage="url('../imagens/botao.jpg')";
+  frm_cons.btn_incluir.disabled=true;
+<?
+      }
+?>
+  frm_cons.hdn_controle.value="2"; 
+  //frm_cons.txt_id_matricula.readOnly=true;
+
+  window.location.href="cons_especialidade.php?id_matricula="+matricula;
+        //window.close();
+
+}
+</script>
+<table align="center" width="100%" cellpadding="2" cellspacing="1" border="0" class="table">
+<tr>
+    <th colspan="3">Efetivo</th>
+</tr>
+<tr class="head">
+    <th>MATRICULA</th>
+    <th>NOME</th>
+    <th>NOME GUERRA</th>
+</tr>
+<?if($bombeiros){
+    $cont = 0;
+    foreach($bombeiros AS $bombeiro){
+    if($cont%2 == 1) $linha = "linA"; else $linha = "linB"; $cont++;
+?>
+<tr class="<?=$linha?>" onclick="sbmit(<?foreach($bombeiro AS $valor){ echo "'$valor', ";} echo "'".data($bombeiro["dt_nascimento"])."'"?>)">
+        <td><?=$bombeiro["id_matricula"]?></td>
+        <td><?=$bombeiro["nm_bombeiro"]?></td>
+        <td><?=$bombeiro["nm_guerra"]?></td>
+</tr>
+<?
+    }
+}else{?>
+<tr><th colspan="3">Nenhum registro encontrado</th></tr>
+<?}?>
+</table>
+<?}else{
+?>
+<script language="javascript" type="text/javascript">
+    var frm_cons=window.opener.document.frm_usuario;
+    alert("Usuï¿½rio nï¿½o encontrado!");
+    //window.opener.document.location.reload();
+    //frm_cons.txt_id_matricula.focus();
+    frm_cons.txt_nm_usuario.value="";
+    frm_cons.txt_login.value="";
+    frm_cons.cmb_perfil.value="";
+    frm_cons.cmb_id_posto.value="";
+    frm_cons.txt_nr_cel.value="";
+    frm_cons.txt_nr_fone.value="";
+    frm_cons.txt_nr_voip.value="";
+    frm_cons.txt_email.value="";
+    frm_cons.cmb_bomb_comunitario.value="";
+    frm_cons.txt_nm_guerra.value="";
+    frm_cons.cmb_id_cidade.value="";
+    frm_cons.fone_conjugue.value="";
+    frm_cons.dt_nascimento.value="";
+    frm_cons.txt_cep.value="";
+    frm_cons.txt_cidade.value="";
+    frm_cons.txt_bairro.value="";
+    frm_cons.txt_nm_edificacao.value="";
+    frm_cons.cmb_estado.value="";
+	frm_cons.cmb_sexo.value="";
+    frm_cons.btn_incluir.value="Incluir";
+    frm_cons.hdn_controle.value="1";
+
+window.close();
+</script>
+  <?}
+  }
+?>
+</body>
+</html>

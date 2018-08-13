@@ -1,0 +1,66 @@
+<?php
+/*
+ * classe connection
+ *  gerencia conexões com bancos de dados,
+ *  através de arquivos de configuração.
+ */
+ 
+final class connection {
+
+
+    private static $conn = null;
+
+    /*
+     * método __construct()
+     */
+	private function __construct(){}
+
+	/*
+	 *  Inicio da Conexão
+	 */
+    public static function init($dir = 'conf', $name = 'audita'){
+
+		// verifica se existe arquivo de configuração
+        // para este banco de dados
+        $pontos = array("./", "../", "../../");
+        foreach($pontos AS $ponto){
+			if (file_exists("{$ponto}{$dir}/{$name}.ini")){
+            // lê o INI e retorna um array
+            $db = parse_ini_file("{$ponto}{$dir}/{$name}.ini");
+
+			}
+        }
+
+		//echo "<pre>"; print_r($db); echo "</pre>"; exit;
+
+		// lê as informações contidas no arquivo
+        $user  = $db['user'];
+        $pass  = $db['pass'];
+        $name  = $db['name'];
+        $host  = $db['host'];
+
+		/*
+		 *  Chama a class bd para conexão e interação com o banco
+		 *  Verifica se a conexão ja não foi instanciada
+		 */
+		if(self::$conn == null){
+			self::$conn = new bd($host, $user, $pass, $name);
+		}
+
+		//echo "<pre>"; print_r(self::$conn); echo "</pre>"; exit;
+
+		return self::$conn;
+
+	}
+
+
+	/*
+	 *  Finaliza da Conexão
+	 */
+    public static function close(){
+		self::$conn->close();
+	}
+	
+}
+
+?>

@@ -1,0 +1,11 @@
+# BANCO externo
+host = pgsql.euportal.com.br
+name = euportal1
+user = euportal1
+pass = awk2011terra
+
+# BANCO localhot
+#host = 127.0.0.1
+#name = audita
+#user = dlfuser
+#pass = dlfpass2011

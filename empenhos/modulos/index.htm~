@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Página Principal</title>
+</head>
+<body>
+<form action="processa.php" method="post" enctype="multipart/form-data" name="formulario">
+ <table width="641" border="0" align="center">
+ <tr>
+ <td width="66" align="left"><font face="Arial" size="3" color="#0000FF"><b>NOME</b></font></td>
+ <td width="561"><input name="nome" type="text" id="nome"></td>
+ </tr>
+ <tr>
+ <td width="66" align="left"><font face="Arial" size="3" color="#0000FF"><b>ASSUNTO</b></font></td>
+ <td width="561"><input name="assunto" type="text" id="assunto"></td>
+ </tr>
+ <tr>
+ <td width="66" align="left"><font face="Arial" size="3" color="#0000FF"><b>MENSAGEM</b></font></td>
+ <td width="561"><textarea name="mensagem" cols="60" rows="7" id="mensagem"></textarea></td>
+ </tr>
+ <tr>
+ <td width="66" align="left"><font face="Arial" size="3" color="#0000FF"><b>COMPLEMENTO</b></font></td>
+ <td width="561"><input name="arquivo" type="file"></td>
+ </tr>
+ <tr>
+ <td width="66" align="left"><font face="Arial" size="3" color="#0000FF"><b>&nbsp;</b></font></td>
+ <td width="561">
+ <p align="center"><input type="submit" name="Submit" value="Enviar"></p>
+ </td>
+ </tr>
+ </table>
+</form>
+</body>
+</html>

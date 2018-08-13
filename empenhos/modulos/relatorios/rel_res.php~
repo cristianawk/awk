@@ -1,0 +1,65 @@
+<?
+//echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+require "../../lib/loader.php";
+
+if($_POST){
+
+   $dt_inicial  = formataCampo($_POST["dt_inicial"], "DT");
+   $dt_final    = formataCampo($_POST["dt_final"], "DT");
+
+    $sql = "SELECT a.nm_usuario, to_char(b.dt_empenho, 'DD/MM/YYYY') AS dt_empenho, a.id_mtr_usuario, a.nr_cpf_usuario,
+            to_char(b.dt_pagamento, 'DD/MM/YYYY') AS dt_pagamento, b.ds_empenho, c.nm_unidade, b.ds_repasse
+            FROM ".TBL_EMPENHO." AS b
+            JOIN ".TBL_USUARIO." AS a ON (a.id_mtr_usuario = b.id_mtr_gestor)
+            JOIN ".TBL_UNIDADE." AS c USING (id_unidade)
+            WHERE b.dt_empenho BETWEEN $dt_inicial AND $dt_final AND dt_pagamento < CURRENT_DATE
+            AND dt_contabilidade IS NULL
+            ORDER BY a.nm_usuario";
+    //echo $sql; exit;
+    $global_conn->query($sql);
+    $num = $global_conn->num_rows();
+    while($tupla = $global_conn->fetch_row()) $dados[] = $tupla;
+    //echo "<pre>"; print_r($dados); echo "</pre>"; exit;
+}
+
+?>
+<link rel="stylesheet" type="text/css" href="../../css/dlf.css">
+<body>
+<br>
+<form target="_self" enctype="multipart/form-data" method="POST" name="frm_cons_geral_oco" action="">
+<table align="center" cellpadding="7" cellspacing="1" border="0" width="95%" class="orgTab">
+    <tr class="head"><th colspan="8">RELAT&Oacute;RIO GESTORES EM ATRAZO</th></tr>
+    <tr class="cab"><th colspan="8">Periodo entre <?=$_POST["dt_inicial"]?> e <?=$_POST["dt_final"]?></th></tr>
+    <tr class="head"><td colspan="8" id="left">Numero de Registros Encontrados:&nbsp;<?=$num?></td></tr>
+    <tr class="cab">
+        <th>Nome do Gestor</th>
+        <th>Matrícula</th>
+        <th>CPF</th>
+        <th>Data do Empenho</th>
+        <th>Nº do Empenho</th>
+        <th>Valor Repassado</th>
+        <th>OBM</th>
+        <th>Data do Pagamento</th>
+    </tr>
+<?
+
+if($dados){
+	foreach($dados AS $dado){ if($lin == "linA") $lin = "linB"; else $lin = "linA";?>
+	<tr class="<?=$lin?>">
+	<td id="left"><?=$dado['nm_usuario']?></td>
+        <td><?=$dado['id_mtr_usuario']?></td>
+        <td><?=$dado['nr_cpf_usuario']?></td>
+        <td><?=$dado['dt_empenho']?></td>
+	<td><?=$dado['ds_empenho']?></td>
+        <td><?=$dado['ds_repasse']?></td>
+        <td><?=$dado['nm_unidade']?></td>
+        <td><?=$dado['dt_pagamento']?></td>
+    </tr>
+      <? } ?>
+<?}else{?>
+<tr><th colspan="6" class="erro">Nenhum registro Encontrado</th></tr>
+<?}?>
+<tr><th colspan="5">&#160;</th></tr>
+</table>
+<p align="center"><a href="javascript:close();">FECHAR</a></p>
+</body>

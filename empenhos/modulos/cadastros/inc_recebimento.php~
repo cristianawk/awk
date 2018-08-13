@@ -1,0 +1,291 @@
+<?php
+require "../../lib/loader.php";
+
+$msg = null;
+$flg = null;
+
+$dtrecebimento = null;
+// echo "<pre>"; print_r($_POST); echo "</pre>";
+//echo "<pre>"; print_r($_GET); echo "</pre>"; exit;
+if($_POST){
+
+    //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
+  $ds_empenho	= $_GET['dado'];
+  if($_POST['dt_empenho']!=""){$dt=$_POST['dt_empenho'];$dado='dt_empenho';}elseif($_POST['dt_recebimento']!=""){$dt=$_POST['dt_recebimento'];$dado='dt_recebimento';}
+  elseif($_POST['dt_devolucao']!=""){$dt=$_POST['dt_devolucao'];$dado='dt_devolucao';}
+  elseif($_POST['dt_aprovacao']!=""){$dt=$_POST['dt_aprovacao'];$dado='dt_aprovacao';}elseif($_POST['dt_contabilidade']!=""){$dt=$_POST['dt_contabilidade'];$dado='dt_contabilidade';}
+  $data 	= str_replace('-', '/', $dt);
+  $dividir 	= explode("/", $data);
+  $parte1 	= $dividir[0]; $parte2 = $dividir[1]; $parte3 = $dividir[2];
+  $data 	= "$parte3-$parte2-$parte1";
+
+$sql = "UPDATE ".TBL_CADASTRO." SET $dado='$data' WHERE ds_empenho='$ds_empenho' ";
+	//echo $sql; exit;
+	$global_conn->query($sql);
+	if($global_conn->get_status()==false){
+		//echo ($global_conn->get_msg());
+		$msg = "Aconteceu algum erro na inserção dos dados!!";
+		$flg = 0;
+
+	}else{
+		$msg = "O novo registro foi inserido com sucesso!";
+		$flg = 1;
+	}
+
+ if($_POST['dt_devolucao']!=""){
+
+    // Chama a classe PHPMailer (pode baixar ela aqui: http://phpmailer.sourceforge.net)
+    include "phpmailer/class.phpmailer.php";
+
+    $devolucao 		= $_POST['dt_devolucao'];
+    $destinatario	= $_POST['ds_emailgestor'];
+    $ds_emailcomandante	= $_POST['ds_emailcomandante'];
+
+    // Instancia o objeto $mail a partir da Classe PHPMailer
+    $mail = new PHPMailer();
+
+    // Recupera os dados do formulário
+    $nome       = " Dlf Sistema Controle de Prazos ";
+    $email      = " $ds_emailcomandante";
+    $mensagem   = "<html><head> <title>Controle de Prazos</title></head><body><h1>Devolução</h1><p><b>Informamos que sua prestação de Contas não foi aprovada, sendo devolvida no dia: $devolucao devido as irregularidades apontadas no arquivo em anexo.</p></body></html>";
+    $arquivo    = $_FILES['arquivo'];
+
+    // Recupera o nome do arquivo
+    $arquivo_nome = $arquivo['name'];
+
+    // Recupera o caminho temporario do arquivo no servidor
+    $arquivo_caminho = $arquivo['tmp_name'];
+
+    // Monta a mensagem que será enviada
+    $corpo = "$mensagem";
+    $corpoSimples = "$mensagem";
+
+    // Informo o Host, FromName, From, subject e para quem o e-mail será enviado
+    $mail->Host = 'correio.cbm.sc.gov.br';
+    $mail->FromName = $nome;
+    $mail->From = $email;
+    $mail->Subject = 'Esta mensagem é de teste do Sistema de Controle de Prazos';
+    $mail->AddAddress($destinatario);
+    $mail->AddCC($email);
+
+    // Informa que a mensagem deve ser enviada em HTML
+    $mail->IsHTML(true);
+
+    // Informa o corpo da mensagem
+    $mail->Body = $corpo;
+
+    // Se o e-mail destino não suportar HTML ele envia o texto simples
+    $mail->AltBody = $corpoSimples;
+
+    // Anexa o arquivo
+    $mail->AddAttachment($arquivo_caminho, $arquivo_nome);
+
+    // Tenta enviar o e-mail e analisa o resultado
+    if ($mail->Send()){
+        echo 'E-mail enviado co sucesso';
+    }else{
+        echo 'Erro:' . $mail->ErrorInfo;
+    }
+
+    exit;
+
+    /*//echo "<pre>"; print_r($_FILES['arquivo']); echo "</pre>"; exit;
+
+    if($_FILES['arquivo']) $anexo = $_FILES['arquivo']; else $anexo = null;
+
+	$devolucao = $_POST['dt_devolucao'];
+	$destinatario = $_POST['ds_emailgestor'];
+
+	//para o envio em formato HTML
+	//$from= $_POST['ds_emailcomandante'];
+      $destinatario = " rogerawk@cbm.sc.gov.br ";
+	$bound = "XYZ-" . date("dmYis") . "-ZYX";
+
+    $headers.= "MIME-version: 1.0\n";
+    $headers.= "From: Dlf Sistema Controle de Prazos <dlf@cbm.sc.gov.br>" . "\r\n";
+    //$headers.= "cc:".$from."\r\n"."X-Mailer: PHP/"."\r\n";
+    $headers .= "Content-type: multipart/mixed; boundary=\"$bound\"\r\n";
+    $headers .= "$bound\n";
+
+
+    $assunto = "Esta mensagem é de teste do Sistema de Controle de Prazos";
+	$corpo ="<html><head> <title>Controle de Prazos</title>	</head> <body> <h1>Devolução</h1><p><b>Informamos que sua prestação de Contas não foi aprovada, sendo devolvida no dia: $devolucao devido as irregularidades apontadas no arquivo em anexo.</p></body></html>";
+
+    $mensagem.= "--$bound\n";
+    $mensagem.= "Content-Transfer-Encoding: 8BIT\n";
+    $mensagem.= "Content-Type: text/html; charset=\"ISO-8859-1\"\n";
+    $mensagem.= "$corpo\n";
+
+    /*
+    echo "<pre>"; print_r($anexo); echo "</pre>"; //exit;
+
+    $fp = fopen($anexo['tmp_name'],"rb");
+    $arq = fread($fp, filesize($anexo['tmp_name']));
+    $arquivo = base64_encode($arq);
+    fclose($fp);
+
+    $mensagem.= "--$bound \n";
+    $mensagem.= "Content-type: ".$anexo['type']."; name=\"".$anexo['name']."\"\n";
+    $mensagem.= "Content-Disposition: attachment; filename=\"".$anexo['name']."\"\n";
+    $mensagem.= "Content-Transfer-Encoding: BASE64\n";
+    $mensagem.= " $arquivo \n";
+    $mensagem.= "--$bound-- \r\n";
+*
+  mail($destinatario,$assunto,$mensagem,$headers);
+
+       echo "<br>email enviado";
+
+      echo "<br> finalizou tudo<br>".$headers;
+	exit;
+//echo "<br>enviando: ".$destinatario. "<br>assunto: ".$assunto."<br>headers: ".$headers;exit;
+*/
+}
+
+
+
+}elseif($_GET){
+$tipo 	= $_GET['tipo'];
+$dado 	= $_GET['dado'];
+//$dado 	= strtolower($_GET['dado']);
+
+ $sql   =  "SELECT ds_empenho, dt_empenho, dt_pagamento, dt_recebimento, dt_devolucao, dt_aprovacao, dt_contabilidade, nm_gestor, id_matricula, nr_cpf, ds_repasse,
+		   ds_emailgestor, ds_emailcomandante FROM ".TBL_CADASTRO." where $tipo='$dado' ORDER BY nm_gestor";
+//echo $sql;// exit;
+ $global_conn->query($sql);
+ while($tupla = $global_conn->fetch_row()) $dados = $tupla;
+
+$ds_emailgestor		= $dados['ds_emailgestor'];
+$ds_emailcomandante	= $dados['ds_emailcomandante'];
+
+// echo "<br>email gestor: ".$ds_emailgestor;
+// echo "<br>email comandante: ".$ds_emailcomandante;
+
+if ($dados['dt_recebimento']!=""){$dtrecebimento=formataData($dados['dt_recebimento']);$flag=1;}
+else{$dtrecebimento="<input type='text'  name='dt_recebimento' id='dt_recebimento' value='' size='10' class='campo_obr' onkeyup='checadata(this)' onblur='checkDate(this)' maxlength='10'>";}
+
+if ($dados['dt_devolucao']!=""){$dtdevolucao=formataData($dados['dt_devolucao']);$flag=2;}
+elseif($flag==1){
+$dtdevolucao="<input type='text'  name='dt_devolucao' id='dt_devolucao' value='' size='10' class='campo_obr' onkeyup='checadata(this)' onblur='checkDate(this)' maxlength='10'>
+<input type='file' id='arquivo' name='arquivo' class='campo_obr' size='30'>";
+
+}
+
+if ($dados['dt_aprovacao']!=""){$dtaprovacao=formataData($dados['dt_aprovacao']);$flag=2;}
+elseif($flag==1){$dtaprovacao="<input type='text'  name='dt_aprovacao' id='dt_aprovacao' value='' size='10' class='campo_obr'  onkeyup='checadata(this)' onblur='checkDate(this)' maxlength='10'>";}
+
+if ($dados['dt_contabilidade']!=""){$dtcontabilidade=formataData($dados['dt_contabilidade']);}
+elseif($flag==2){$dtcontabilidade="<input type='text'  name='dt_contabilidade' id='dt_contabilidade' value='' size='10' class='campo_obr' onkeyup='checadata(this)' onblur='checkDate(this)' maxlength='10'>";}
+//print_r($dados);
+//echo "<br>mostra: ".$dados['ds_empenho'];
+
+}
+function formataData($data){
+    if($data != NULL){
+        $aux_data = explode("-", $data);
+        $nova_data = $aux_data[2]."/".$aux_data[1]."/".$aux_data[0];
+        return $nova_data;
+    }else{
+        return 'NULL';
+    }
+}
+?>
+<script language="JavaScript" type="text/javascript" src="../../js/prototype.js"></script>
+<link href="../../css/themes/default.css" rel="stylesheet" type="text/css" >
+<link href="../../css/themes/alphacube.css" rel="stylesheet" type="text/css" >
+<link rel="stylesheet" type="text/css" href="../../css/menu.css">
+<link rel="stylesheet" type="text/css" href="../../css/dlf.css">
+
+<p id="mesg" align="center"></p>
+<fieldset>
+<legend>Acoes</legend>
+<form name="frm_acao" id="frm_acao" action="" method="POST" enctype="multipart/form-data">
+<br>
+<table border="0" cellspacing="1" cellpadding="3" align="center" id="orgTableBorder" width="100%">
+<? //if($dados){echo "entra aqui";
+	//foreach($dados AS $dados){ if($lin == "linA") $lin = "linB"; else $lin = "linA";?>
+<tr>
+	<th width="20%">N. Empenho:</th>
+	<td width="30%"><?=$dados['ds_empenho']?></td>
+	<th width="20%">Data do Empenho:</th>
+	<td width="30%"><?=formataData($dados['dt_empenho'])?></td>
+</tr>
+<tr>
+	<th>Nome do Gestor:</th>
+	<td><?=$dados['nm_gestor']?></td>
+	<th>Matricula do Gestor:</th>
+	<td><?=$dados['id_matricula']?></td>
+</tr>
+<tr>
+	<th>CPF Gestor:</th>
+	<td><?=$dados['nr_cpf']?></td>
+	<th>Valor Repassado:</th>
+	<td><?=$dados['ds_repasse']?></td>
+</tr>
+<tr>
+	<th>Data do Pagamento:</th>
+	<td><?=formataData($dados['dt_pagamento'])?></td>
+	<th>Data Recebimento:</th>
+	<td><?=$dtrecebimento?></td>
+</tr>
+<tr>
+	<th>Data Devolução:</th>
+	<td><?=$dtdevolucao?></td>
+	<th>Data Aprovação:</th>
+	<td><?=$dtaprovacao?></td>
+</tr>
+<tr>
+	<th>Data Contabilidade:</th>
+	<td><?=$dtcontabilidade?></td>
+</tr>
+<tr>
+<? //} ?>
+</tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="4"><hr></th></tr>
+<tr>
+    <th colspan="4">
+<input type="hidden" name="ds_emailgestor" value="<?=$ds_emailgestor?>">
+<input type="hidden" name="ds_emailcomandante" value="<?=$ds_emailcomandante?>">
+        <input type="submit" name="btn_incluir" id="btn_incluir" value="ATUALIZAR" class="botao">
+    </th>
+</tr>
+</table>
+</fieldset>
+</form>
+
+<script type="text/javascript">
+
+      <? if($msg != ""){
+	    if($flg == 1){?>
+	    loadMesg('<?=$msg?>', 'acerto', true, 1000);
+	    <?}else{?>
+	    loadMesg('<?=$msg?>', 'erro', false, 3000);
+
+      <?} } ?>
+
+
+	function loadMesg(msg, optClass, b, t){
+		//alert(msg);
+		//alert($('mesg'));
+		$('mesg').innerHTML = "<div class='"+optClass+"'>"+msg+"</div>";
+
+		setTimeout(function(){ $('mesg').innerHTML = '&nbsp;'; if(b) fechar(); }, t);
+
+	}
+
+	function checadata(campo){
+	  if(campo.value.length==2){
+	    campo.value=campo.value +"/";
+	  }
+	  if(campo.value.length==5){
+	    campo.value=campo.value +"/";
+	  }
+	}
+
+
+function fechar(){
+	parent.globalWin.hide();
+}
+
+</script>

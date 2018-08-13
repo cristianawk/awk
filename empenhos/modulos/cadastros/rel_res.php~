@@ -1,0 +1,133 @@
+<?
+//echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
+require "../../lib/loader.php";
+
+if($_POST){
+
+   $dt_inicial  = formataCampo($_POST["dt_inicial"], "DT");
+   $dt_final    = formataCampo($_POST["dt_final"], "DT");
+
+    $sql = "SELECT nm_gestor, dt_empenho, ds_empenho FROM cadastros WHERE dt_empenho BETWEEN $dt_inicial AND $dt_final ORDER BY nm_gestor";
+    $global_conn->query($sql);//echo $sql;
+    while($tupla = $global_conn->fetch_row()) $dados[] = $tupla;
+    //$codigos[$tupla['nm_gestor']."- ".$tupla['ds_empenho']] += $tupla['dt_empenho'];
+//     $nm_gestor	= $dados['nm_gestor'];
+//     $ds_empenho	= $dados['ds_empenho'];
+//     $dt_empenho	= $dados['dt_empenho'];
+
+	//echo $sql;
+	//echo "<pre>"; print_r($dados); echo "</pre>"; //exit;
+}
+
+?>
+<style type="text/css">
+.table{
+    background: #FEFEFE;
+}
+.head{
+    background: #AFC0BD;
+    font-family: monospace;
+}
+.cab{
+    background: #DAE6E5;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.lin{
+    background: #DDD9E6;
+    font-family: serif;
+    font-size: 10px;
+}
+
+.lin2{
+    background: #F2F2F2;
+    font-family: serif;
+    font-size: 10px;
+}
+
+.pe{
+    background: #DAE6E5;
+    font-family: serif;
+    font-size: 12px;
+}
+.erro{
+    background: #FF0000;
+    color: #FFF;
+}
+
+    table.grafico {
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        background-image:url(../imagens/bg_fade.png);
+        background-repeat: repeat-x;
+        background-position:left top;
+    }
+    th.grafico {
+        text-align: center;
+        vertical-align:top;
+        color:#eee;
+        background-color:#999;
+    }
+    td.grafico {
+        padding: 4px 6px;
+        border-bottom:1px solid #e5e5e5;
+        border-left:1px solid #e5e5e5;
+        background-color:#fff;
+    }
+    td.value {
+        background-image: url(../imagens/gridline58.gif);
+        background-repeat: repeat-x;
+        background-position: left top;
+        border-left: 1px solid #e5e5e5;
+        border-right: 1px solid #e5e5e5;
+        padding:0;
+        border-bottom: none;
+        background-color:transparent;
+    }
+    td.value img {
+        vertical-align: middle;
+        margin: 5px 5px 5px 0;
+    }
+    td.last {
+        border-bottom:1px solid #e5e5e5;
+        font-family: serif;
+        font-size: 10px;
+    }
+    td.first {
+        border-top:1px solid #e5e5e5;
+        font-family: serif;
+        font-size: 10px;
+    }
+
+</style>
+<body onload="ajustaspan()">
+<form target="_self" enctype="multipart/form-data" method="POST" name="frm_cons_geral_oco" onsubmit="return sbmit()" onreset="retorna(this)" action="">
+<table align="center" cellpadding="4" cellspacing="1" border="0" width="100%" class="table">
+    <tr>
+	<th colspan="5" class="head">RELAT&Oacute;RIO GESTORES EM ATRAZO</th>
+    </tr>
+    <tr><th colspan="5" class="cab">Periodo entre <?=$_POST["dt_inicial"]?> e <?=$_POST["dt_final"]?></th></tr>
+    <tr class="cab">
+	<th>Nome do Gestor</th>
+	<th>Data do Empenho</th>
+	<th>Nº do Empenho</th>
+    </tr>
+<?
+
+if($dados){
+	foreach($dados AS $dado){ if($lin == "linA") $lin = "linB"; else $lin = "linA";?>
+	<tr onclick="javascript:recebimento('ds_empenho', '<?=$dado['ds_empenho']?>')" class="<?=$lin?>" style="cursor: pointer">
+		<th align="left"><?=$dado['nm_gestor']?></th>
+		<td align="center"><?=$dado['dt_empenho']?></td>
+		<td align="left"><?=$dado['ds_empenho']?></td>
+    </tr>
+      <? } ?>
+<?}else{?>
+<tr><th colspan="6" class="erro">Nenhum registro Encontrado</th></tr>
+<?}?>
+<tr><th colspan="5">&#160;</th></tr>
+</table>
+
+<p style="color:blue; cursor: pointer;" colspan="4"><a href="javascript:history.back();">Voltar</a></p>
+</body>

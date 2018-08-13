@@ -1,0 +1,65 @@
+<?
+require "../../lib/loader.php";
+//echo "<pre>"; print_r($_GET); echo "</pre>"; exit;
+
+ if($_GET['id_cidade']){
+
+// $dado  = strtolower($_GET['dados']);
+// $dado  = $_GET['dados'];
+//  $tipo  = $_GET['tipo'];
+//  if ($tipo=="N. Empenho"){$tipo="ds_empenho";}
+//  if ($tipo=="Data do Empenho"){$tipo="dt_empenho";}
+//  if ($tipo=="Nome do Gestor"){$tipo="nm_gestor";}
+//  if ($tipo=="Matricula do Gestor"){$tipo="id_matricula";}
+//  if ($tipo=="CPF Gestor"){$tipo="nr_cpf";}
+//  if ($tipo=="Valor Repassado"){$tipo="ds_repasse";}
+// 
+//  $sql   =  "SELECT ds_empenho, dt_empenho, nm_gestor, id_matricula, nr_cpf, ds_repasse 
+// 	    FROM ".TBL_CADASTRO." where $tipo like '%$dado%' ORDER BY nm_gestor";
+
+ $dado  = strtolower($_GET['dados']);
+ $dado  = $_GET['dados'];
+ $tp    = $_GET['tipo'];
+ $tipo  = $_GET['tipo'];
+    if ($tp=="N. Empenho"){$tp="ds_empenho like "."'%$dado%'";$tipo="ds_empenho";}
+    if ($tp=="Data do Empenho"){$tp="dt_empenho = "."'$dado'";$tipo="dt_empenho";}
+    if ($tp=="Nome do Gestor"){$tp="nm_gestor like "."'%$dado%'";$tipo="nm_gestor";}
+    if ($tp=="Matricula do Gestor"){$tp="id_matricula like "."'%$dado%'";$tipo="id_matricula";}
+    if ($tp=="CPF Gestor"){$tp="nr_cpf like "."'%$dado%'";$tipo="nr_cpf";}
+    if ($tp=="Valor Repassado"){$tp="ds_repasse= "."'$dado'";$tipo="ds_repasse";}
+
+ $sql   =  "SELECT ds_empenho, dt_empenho, nm_gestor, id_matricula, nr_cpf, ds_repasse 
+	    FROM ".TBL_CADASTRO." where $tp ORDER BY nm_gestor";
+
+ //echo $sql; //exit;
+
+ $global_conn->query($sql);
+ while($tupla = $global_conn->fetch_row()) $dados[] = $tupla;
+
+ }
+
+?>
+<table border="0" cellspacing="0" cellpadding="4" width="100%" class="orgTable">
+<tr class="head">
+	<th width="10%">N. Empenho</th>
+	<th width="10%">Data do Empenho</th>
+	<th width="30%">Nome do Gestor</th>
+	<th width="40%">Matricula do Gestor</th>
+	<th width="10%">CPF Gestor</th>
+	<th width="10%">Valor Repassado</th>
+</tr>
+<? if($dados){
+	foreach($dados AS $dados){ if($lin == "linA") $lin = "linB"; else $lin = "linA";?>
+	<tr onclick="javascript:recebimento('<?=$tipo?>', '<?=$dados['ds_empenho']?>')" class="<?=$lin?>" style="cursor: pointer">
+		<th><?=$dados['ds_empenho']?></th>
+		<td><?=$dados['dt_empenho']?></td>
+		<td><?=$dados['nm_gestor']?></td>
+		<td><?=$dados['id_matricula']?></td>
+		<th><?=$dados['nr_cpf']?></th>
+		<th><?=$dados['ds_repasse']?></th>
+	</tr>
+<? }
+ } else { ?>
+	<tr class="erro"><th colspan="5">Nenhum Registro foi encontrado</th></tr>
+ <?}?>
+</table>

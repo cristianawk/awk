@@ -1,0 +1,109 @@
+<? //echo "passa aqui";exit;
+//echo "<pre>"; print_r($_GET); echo "</pre>";exit;
+require "../../lib/loader.php";
+
+    function data($data){
+        $aux = explode("-", $data);
+        $valor = $aux[2]."/".$aux[1]."/".$aux[0];
+        return $valor;
+    }
+//echo "<br>cons: ".$_GET["flag"];
+if(@$_GET["flag"]=="0"){
+
+  $matricula		=	$_GET["campo"];
+  $cpf			=	$_GET["campo2"];
+  $emailgestor		=	$_GET["campo3"];
+  $emailcomandante	=	$_GET["campo4"];
+
+
+	$query="SELECT usr.id_matricula, cad.nm_gestor, cad.nr_cpf, usr.un_gestor, cad.ds_emailgestor, 
+		      cad.id_matricula, cad.ds_emailcomandante, obm.nm_batalhao
+	      FROM ".TBL_USUARIO." AS usr
+	      JOIN ".TBL_CADASTRO." AS cad ON (cad.id_matricula=usr.id_matricula) 
+	      JOIN batalhao AS obm ON (obm.id_obm=usr.un_gestor)
+	      where usr.id_matricula= '$matricula'";
+    	echo $query; exit;
+	$global_conn->query($query);
+	if($global_conn->get_status()==false){
+	  die($conn->get_msg());
+	}
+	  $rows = $global_conn->num_rows();
+	  
+	if($rows>0){
+	    $tupula = $global_conn->fetch_row();
+
+	
+	?>
+<script language="javascript" type="text/javascript">//<!--
+var frm_cons=window.opener.document.frm_usuarios;
+if (window.opener.confirm("Existe Registro para esta Matricula. Deseja Carregar?")) {
+
+  frm_cons.id_matricula.value="<?=$tupula["id_matricula"]?>";
+  frm_cons.nm_gestor.value="<?=$tupula["nm_gestor"]?>";
+  frm_cons.nr_cpf.value="<?=(strtolower($tupula["nr_cpf"]))?>";
+  frm_cons.un_gestor.value="<?=$tupula["un_gestor"]?>";
+  frm_cons.ds_emailgestor.value="<?=$tupula["ds_emailgestor"]?>";
+  frm_cons.ds_emailcomandante.value="<?=(strtolower($tupula["ds_emailcomandante"]))?>";
+
+  frm_cons.hdn_controle.value="2"; 
+  //frm_cons.txt_id_matricula.readOnly=true;
+} else {
+  frm_cons.id_matricula.value="";
+  frm_cons.id_matricula.focus();
+}
+// -->	
+	window.close();
+</script>
+ 	  <?  
+  
+    }else{ 
+    
+    ?>
+<script language="javascript" type="text/javascript">
+	var frm_cons=window.opener.document.frm_usuarios;
+	alert("Usuario nao encontrado!!!");
+	//window.opener.document.location.reload();
+	frm_cons.nm_gestor.focus();
+	frm_cons.nm_gestor.value="";
+	frm_cons.nr_cpf.value="";
+	frm_cons.un_gestor.value="";
+	frm_cons.ds_emailgestor.value="";
+	frm_cons.ds_emailcomandante.value="";
+	frm_cons.hdn_controle.value="1";	
+</script>
+  <?}
+pg_close();
+?>
+<script language="JavaScript" type="text/javascript">
+  window.close();
+</script>
+<?
+exit;
+}
+    if(@$_GET["flag"]=="1"){
+    	$matricula=strtoupper(@$_GET["campo"]);
+    	if(!is_numeric($matricula)){
+?>
+	<script language="javascript" type="text/javascript">
+    		  var frm_cons=window.opener.document.frm_usuarios;
+ 		      window.alert("O campo Matricula deve conter apenas numeros!!");
+ 		      frm_cons.id_matricula.focus();
+ 		      frm_cons.id_matricula.value="";
+		      frm_cons.nm_gestor.value="";
+		      frm_cons.nr_cpf.value="";
+		      frm_cons.un_gestor.value="";
+		      frm_cons.ds_emailgestor.value="";
+		      frm_cons.ds_emailcomandante.value="";
+		      frm_cons.btn_incluir.value="Incluir";
+		      frm_cons.hdn_controle.value="1";
+    		  window.close();
+ 		    </script>
+ 	    <?
+ 	    }
+}
+?>
+<script language="JavaScript" type="text/javascript">
+  window.close();
+</script>
+</body>
+</html>

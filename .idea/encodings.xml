@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/audita/modulos/administrativo/importar_produto.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/audita/modulos/auditoria/nova_nota_recebida.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/audita/modulos/orgao/editar_requisicao.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/audita/modulos/orgao/lista_ordem_requisicao.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/site/enviaform.php3" charset="ISO-8859-1" />
+  </component>
+</project>

@@ -1,0 +1,160 @@
+#block {
+    background-color: black;
+    display: none;
+    height: 100%;
+    left: 0;
+    opacity: 0.4;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+#popupbox h2 {
+    margin: 0;
+}
+#popupbox {
+    background-color: white;
+    border: 5px solid #C3D9FF;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 1px 1px 5px black;
+    display: none;
+    margin: 20px auto 0 308px;
+    padding: 0 5px 5px;
+    position: absolute;
+    width: 330px;
+    z-index: 2;
+}
+.buttonsBar {
+    margin-top: 3px;
+    text-align: right;
+}
+#popupbox label {
+    display: block;
+    float: left;
+    margin-right: 9px;
+    margin-top: 7px;
+    text-align: right;
+    width: 102px;
+}
+a.button {
+    background-color: #92CAE4;
+    border: 1px solid #205791;
+    box-shadow: 1px 1px 5px black;
+    color: white;
+    float: right;
+    font-weight: bold;
+    padding: 5px;
+    text-decoration: none;
+}
+table {
+    box-shadow: 1px 1px 100px black;
+}
+.bar {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.title {
+    background-color: RoyalBlue;
+    border: 2px solid blanchedAlmond;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 1px 1px 5px black;
+    color: white;
+    font-family: Lucida Grande;
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 5px;
+    text-shadow: 1px 1px gray;
+}
+.reveal-modal-bg {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.4);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+.button.green.close {
+    float: right;
+}
+html body div#modal div#content form#frm_itens_empenho table#myTable.orgTable tbody tr td {
+    font-family: arial;
+    font-size: 14px;
+    width: 120px;
+}
+html body div#modal2 div#content form#frm_itens_empenho2 table#myTable.orgTable tbody tr td {
+    font-family: arial;
+    font-size: 14px;
+    width: 120px;
+}
+#modal {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.3);
+    border-radius: 8px 8px 8px 8px;
+    height: 100%;
+    left: 0 !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    padding: 170px 8px 8px;
+    position: absolute !important;
+    top: 0 !important;
+    visibility: hidden;
+    width: 100%;
+    z-index: 101;
+}
+#modal2 {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.3);
+    border-radius: 8px 8px 8px 8px;
+    height: 100%;
+    left: 0 !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    padding: 170px 8px 8px;
+    position: absolute !important;
+    top: 0 !important;
+    visibility: hidden;
+    width: 100%;
+    z-index: 101;
+}
+#heading {
+    background-image: -moz-linear-gradient(center top , #F9F9F9, #E9E9E9);
+    border-bottom: 1px solid #BABABA;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 -1px 0 #FFFFFF inset, 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #444444;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 44px;
+    text-align: center;
+    text-shadow: 0 1px 0 #FFFFFF;
+    width: 900px;
+}
+#content {
+    background: none repeat scroll 0 0 #FCFCFC;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    height: 320px;
+    margin: 0 auto;
+    width: 900px;
+}
+#content p {
+    color: #555555;
+    float: right;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 22px;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+html body div#modal div#content form#frm_itens_empenho table#myTable.orgTable tbody tr td label.error {
+	padding-left: 12px;
+	font-size: 11px;
+	color: red;
+}
+html body div#modal2 div#content form#frm_itens_empenho2 table#myTable.orgTable tbody tr td label.error {
+	padding-left: 12px;
+	font-size: 11px;
+	color: red;
+}

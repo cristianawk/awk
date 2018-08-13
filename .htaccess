@@ -1,0 +1,3 @@
+RewriteCond %{HTTP_HOST} ^awktec\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.awktec\.com$
+RewriteRule ^/?$ "http\:\/\/awktec\.com\/site\/" [R=301,L]
